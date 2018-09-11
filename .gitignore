@@ -1,0 +1,10 @@
+.classpath
+.project
+.settings
+.springBeans
+target
+.idea/*
+*.iml
+.git/*
+jetty.log
+*/.DS_Store
