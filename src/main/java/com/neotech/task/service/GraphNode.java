@@ -1,4 +1,4 @@
-package com.neotech.task.utils;
+package com.neotech.task.service;
 /*
  * Copyright C.T.Co Ltd, 15/25 Jurkalnes Street, Riga LV-1046, Latvia. All rights reserved.
  */
