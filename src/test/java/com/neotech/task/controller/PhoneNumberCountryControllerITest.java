@@ -1,6 +1,5 @@
-package com.neotech.task.app;
+package com.neotech.task.controller;
 
-import com.neotech.task.controller.PhoneRequest;
 import com.neotech.task.service.dto.CountryDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;

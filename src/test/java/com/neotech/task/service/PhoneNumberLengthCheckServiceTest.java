@@ -1,10 +1,9 @@
-package com.neotech.task.app;
+package com.neotech.task.service;
 /*
  * Copyright C.T.Co Ltd, 15/25 Jurkalnes Street, Riga LV-1046, Latvia. All rights reserved.
  */
 
 import com.neotech.task.exception.PhoneNumberIncorrectException;
-import com.neotech.task.service.PhoneNumberLengthCheckService;
 import org.junit.Test;
 
 import java.util.HashMap;
