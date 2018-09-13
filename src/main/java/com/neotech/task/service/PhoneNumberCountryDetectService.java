@@ -38,7 +38,7 @@ public class PhoneNumberCountryDetectService {
     private static GraphNode[] phoneNumberGraph = new GraphNode[10];
 
     @Autowired
-    PhoneNumberValidationService validationService;
+    PhoneNumberLengthCheckService validationService;
 
     @PostConstruct
     public void init() {

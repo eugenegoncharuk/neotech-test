@@ -23,20 +23,51 @@ public class PhoneNumberCountryControllerITest {
 	private TestRestTemplate restTemplate;
 
 	@Test
-	public void contextLoads() {
-		final PhoneRequest invalidLengthForLatvia = new PhoneRequest("3711231232");
-		final PhoneRequest validLatvia = new PhoneRequest("37112312322");
-
-		ResponseEntity<CountryDto> responseEntity =
-				restTemplate.postForEntity("/country-detect", invalidLengthForLatvia, CountryDto.class);
-		assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-
-		ResponseEntity<CountryDto> responseEntity2 =
-				restTemplate.postForEntity("/country-detect", validLatvia, CountryDto.class);
-		CountryDto c = responseEntity2.getBody();
-		assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
-		assertEquals(c.getCountry(), "Latvia");
-		assertEquals(c.getCountryCode(), "371");
+	public void validPhoneNumbersTest() {
+		checkIsValid(new PhoneRequest("37112312322"), "Latvia", "371");
+		checkIsValid(new PhoneRequest("13321231212332"), "United States", "1332");
+		checkIsValid(new PhoneRequest("6831234"), "Niue", "683");
 	}
 
+	@Test
+	public void incorrectLengthPhoneNumberTest() {
+		checkIncorrectLengthFor(new PhoneRequest("3712665332"));
+		checkIncorrectLengthFor(new PhoneRequest("371266533222"));
+		checkIncorrectLengthFor(new PhoneRequest("37512345678"));
+		checkIncorrectLengthFor(new PhoneRequest("3751234567890"));
+		checkIncorrectLengthFor(new PhoneRequest("68345623"));
+	}
+
+	@Test
+	public void notValidPhoneNumberTest() {
+		checkIsNotValidFor(new PhoneRequest(""));
+		checkIsNotValidFor(new PhoneRequest("12"));
+		checkIsNotValidFor(new PhoneRequest("134533"));
+		checkIsNotValidFor(new PhoneRequest("12345678901234567"));
+		checkIsNotValidFor(new PhoneRequest("1234567890123456732423223443243232323423"));
+		checkIsNotValidFor(new PhoneRequest("somestring"));
+		checkIsNotValidFor(new PhoneRequest("some long text, not related to phone number"));
+	}
+
+
+	private void checkIncorrectLengthFor(PhoneRequest req) {
+		ResponseEntity<CountryDto> responseInvalid =
+				restTemplate.postForEntity("/country-detect", req, CountryDto.class);
+		assertEquals(HttpStatus.NOT_FOUND, responseInvalid.getStatusCode());
+	}
+
+	private void checkIsValid(PhoneRequest validLatvia, String country, String code) {
+		ResponseEntity<CountryDto> responseValid =
+				restTemplate.postForEntity("/country-detect", validLatvia, CountryDto.class);
+		CountryDto c = responseValid.getBody();
+		assertEquals(HttpStatus.OK, responseValid.getStatusCode());
+		assertEquals(c.getCountry(), country);
+		assertEquals(c.getCountryCode(), code);
+	}
+
+	private void checkIsNotValidFor(PhoneRequest req) {
+		ResponseEntity<CountryDto> responseInvalid =
+				restTemplate.postForEntity("/country-detect", req, CountryDto.class);
+		assertEquals(HttpStatus.BAD_REQUEST, responseInvalid.getStatusCode());
+	}
 }

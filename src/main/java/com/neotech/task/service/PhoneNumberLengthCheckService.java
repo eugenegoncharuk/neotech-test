@@ -17,8 +17,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class PhoneNumberValidationService {
+public class PhoneNumberLengthCheckService {
 
+    public static final String URL = "https://en.wikipedia.org/wiki/List_of_mobile_telephone_prefixes_by_country#International_prefixes_table";
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     Map<String, Integer> countryPhoneNumberLengthsMap = new HashMap();
@@ -37,7 +38,7 @@ public class PhoneNumberValidationService {
     }
 
     public void initData() throws IOException {
-        final String content = HtmlReadUtils.readUrl("https://en.wikipedia.org/wiki/List_of_mobile_telephone_prefixes_by_country#International_prefixes_table");
+        final String content = HtmlReadUtils.readUrl(URL);
         String pattern = "<tr>.*?<\\/td>.*?<td.*?\\+([0-9]+).*?<\\/td>[^<]*<td.*?<\\/td>[^<]*<td.*?([0-9]+)<\\/td>";
 
         Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
