@@ -8,6 +8,7 @@ import com.neotech.task.utils.HtmlReadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -24,6 +25,12 @@ public class PhoneNumberLengthCheckService {
 
     Map<String, Integer> countryPhoneNumberLengthsMap = new HashMap();
 
+    public PhoneNumberLengthCheckService(){}
+
+    public PhoneNumberLengthCheckService(Map<String, Integer> map) {
+        this.countryPhoneNumberLengthsMap = map;
+    }
+
     @PostConstruct
     public void init() {
         logger.info("Initializing from the web wiki all the codes/countries lengths");
@@ -37,7 +44,7 @@ public class PhoneNumberLengthCheckService {
         logger.info("Finished init from the web wiki all the codes/countries lengths");
     }
 
-    public void initData() throws IOException {
+    private void initData() throws IOException {
         final String content = HtmlReadUtils.readUrl(URL);
         String pattern = "<tr>.*?<\\/td>.*?<td.*?\\+([0-9]+).*?<\\/td>[^<]*<td.*?<\\/td>[^<]*<td.*?([0-9]+)<\\/td>";
 
@@ -55,13 +62,19 @@ public class PhoneNumberLengthCheckService {
      * @param phoneNumber
      * @param countryCode
      */
-    public void validate(String phoneNumber, String countryCode) {
+    public boolean isValid(String phoneNumber, String countryCode) {
+        if (StringUtils.isEmpty(phoneNumber) || StringUtils.isEmpty(countryCode)) {
+            throw new PhoneNumberIncorrectException();
+        }
+
         final Integer length = countryPhoneNumberLengthsMap.get(countryCode);
         final int domesticNumberLength = phoneNumber.length() - countryCode.length();
 
         if(length != null && length != domesticNumberLength){
             throw new PhoneNumberIncorrectException();
         }
+
+        return true;
     }
 
 }

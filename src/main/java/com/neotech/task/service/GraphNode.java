@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public class GraphNode {
 
-    GraphNode[] nextNodes = new GraphNode[10];
+    public GraphNode[] nextNodes = new GraphNode[10];
 
-    Optional<String> country = Optional.empty();
+    public Optional<String> country = Optional.empty();
 
-    String countryCode;
+    public String countryCode;
 }

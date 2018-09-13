@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -37,8 +38,17 @@ public class PhoneNumberCountryDetectService {
 
     private static GraphNode[] phoneNumberGraph = new GraphNode[10];
 
-    @Autowired
     PhoneNumberLengthCheckService validationService;
+
+    @Autowired
+    public PhoneNumberCountryDetectService(PhoneNumberLengthCheckService validationService) {
+        this.validationService = validationService;
+    }
+
+    public PhoneNumberCountryDetectService(PhoneNumberLengthCheckService validationService, GraphNode[] phoneNumberGraph) {
+        this.validationService = validationService;
+        this.phoneNumberGraph = phoneNumberGraph;
+    }
 
     @PostConstruct
     public void init() {
@@ -60,12 +70,16 @@ public class PhoneNumberCountryDetectService {
 
     @Nullable
     public CountryDto identify(String phoneNumber) {
+        if (StringUtils.isEmpty(phoneNumber)) {
+            throw new PhoneNumberIncorrectException();
+        }
+
         final Pair<String, String> pairRes = getFromGraph(phoneNumberGraph, phoneNumber);
         if (pairRes == null) {
             throw new PhoneNumberIncorrectException();
         }
 
-        validationService.validate(phoneNumber, pairRes.getValue());
+        validationService.isValid(phoneNumber, pairRes.getValue());
         
         return new CountryDto(pairRes.getKey(), pairRes.getValue());
     }
