@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PhoneNumberDetectionApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PhoneNumberDetectionApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PhoneNumberDetectionApplication.class, args);
+    }
 }

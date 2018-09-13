@@ -9,5 +9,7 @@ public class GraphNode {
 
     GraphNode[] nextNodes = new GraphNode[10];
 
-    Optional<String> value = Optional.empty();
+    Optional<String> country = Optional.empty();
+
+    String countryCode;
 }

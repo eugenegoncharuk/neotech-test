@@ -13,9 +13,9 @@ import java.net.URL;
 public class HtmlReadUtils {
 
     public static String readUrl(String url) throws IOException {
-        final URL oracle = new URL(url);
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(oracle.openStream()));
+        final URL urk = new URL(url);
+        final BufferedReader in = new BufferedReader(
+                new InputStreamReader(urk.openStream()));
         return IOUtils.toString(in);
     }
 

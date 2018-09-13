@@ -9,10 +9,16 @@ import javax.validation.constraints.Pattern;
 public class PhoneRequest {
 
     @NotNull
-    // E.164 says 15 is max, phone vendors put 16 as longest
+    // E.164 says 15 is max, phone vendors put 16 as longest number
     // Minimal phone number is for Niue as of now: Format: +683 XXXX
     @Pattern(regexp = "[0-9]{7,16}")
     private String phone;
+
+    public PhoneRequest(){}
+
+    public PhoneRequest(@NotNull @Pattern(regexp = "[0-9]{7,16}") String phone) {
+        this.phone = phone;
+    }
 
     public String getPhone() {
         return phone;

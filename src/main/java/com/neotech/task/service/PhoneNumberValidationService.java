@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class ValidationService {
+public class PhoneNumberValidationService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -48,16 +48,17 @@ public class ValidationService {
         }
     }
 
+    /**
+     * Map doesn't contain all the data about particular country length numbers in the world
+     * 
+     * @param phoneNumber
+     * @param countryCode
+     */
     public void validate(String phoneNumber, String countryCode) {
         final Integer length = countryPhoneNumberLengthsMap.get(countryCode);
         final int domesticNumberLength = phoneNumber.length() - countryCode.length();
-        
-        if(length == null){
-            // minimum length over the world is 4
-            if (domesticNumberLength < 4) {
-                throw new PhoneNumberIncorrectException();
-            }
-        } else if (length != domesticNumberLength) {
+
+        if(length != null && length != domesticNumberLength){
             throw new PhoneNumberIncorrectException();
         }
     }

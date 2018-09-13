@@ -4,9 +4,12 @@ package com.neotech.task.service;
  */
 
 import com.neotech.task.exception.PhoneNumberIncorrectException;
+import com.neotech.task.service.dto.CountryDto;
 import com.neotech.task.utils.HtmlReadUtils;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,9 @@ public class PhoneNumberCountryDetectService {
 
     private static GraphNode[] phoneNumberGraph = new GraphNode[10];
 
+    @Autowired
+    PhoneNumberValidationService validationService;
+
     @PostConstruct
     public void init() {
         logger.info("Initializing from the web wiki all the codes/countries");
@@ -54,14 +60,17 @@ public class PhoneNumberCountryDetectService {
 
     @Nullable
     public CountryDto identify(String phoneNumber) {
-        final String country = getFromGraph(phoneNumberGraph, phoneNumber);
-        if (country == null) {
+        final Pair<String, String> pairRes = getFromGraph(phoneNumberGraph, phoneNumber);
+        if (pairRes == null) {
             throw new PhoneNumberIncorrectException();
         }
-        return new CountryDto(country);
+
+        validationService.validate(phoneNumber, pairRes.getValue());
+        
+        return new CountryDto(pairRes.getKey(), pairRes.getValue());
     }
 
-    private String getFromGraph(GraphNode[] passedGraph, String number) {
+    private Pair<String, String> getFromGraph(GraphNode[] passedGraph, String number) {
         final String digitS = number.substring(0, 1);
         final Integer digit = Integer.valueOf(digitS);
 
@@ -69,9 +78,9 @@ public class PhoneNumberCountryDetectService {
             return null;
         }
 
-        final Optional<String> value = passedGraph[digit].value;
+        final Optional<String> value = passedGraph[digit].country;
         if (value.isPresent()) {
-            return value.get();
+            return new Pair(value.get(), passedGraph[digit].countryCode);
         }
 
         if (passedGraph[digit] == null || number.length() <= 1) {
@@ -120,7 +129,7 @@ public class PhoneNumberCountryDetectService {
 
                 logger.debug("processNorthAmericaCountryContent: " + numberStr + "=" + country + ":" + countryState);
 
-                insertIntoGraph(phoneNumberGraph, numberStr, country);
+                insertIntoGraph(phoneNumberGraph, numberStr, country, "");
             }
         }
     }
@@ -139,21 +148,24 @@ public class PhoneNumberCountryDetectService {
             final String country = m.group(2);
             logger.debug("processWorldExceptNorthAmerica: " + numberStr + "=" + country);
 
-            insertIntoGraph(phoneNumberGraph, numberStr, country);
+            insertIntoGraph(phoneNumberGraph, numberStr, country, "");
         }
     }
 
-    private void insertIntoGraph(GraphNode[] phoneNumberGraph, String number, String country) {
+    private void insertIntoGraph(GraphNode[] phoneNumberGraph, String number, String country, String countryCode) {
         final String digitS = number.substring(0, 1);
+        countryCode += digitS;
         final Integer digit = Integer.valueOf(digitS);
+        
         if (phoneNumberGraph[digit] == null) {
             phoneNumberGraph[digit] = new GraphNode();
         }
 
         if (number.length() > 1) {
-            insertIntoGraph(phoneNumberGraph[digit].nextNodes, number.substring(1), country);
+            insertIntoGraph(phoneNumberGraph[digit].nextNodes, number.substring(1), country, countryCode);
         } else {
-            phoneNumberGraph[digit].value = Optional.of(country);
+            phoneNumberGraph[digit].country = Optional.of(country);
+            phoneNumberGraph[digit].countryCode = countryCode;
         }
     }
 }
