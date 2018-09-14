@@ -4,9 +4,6 @@ package com.neotech.task.service;
  */
 
 import com.neotech.task.exception.PhoneNumberIncorrectException;
-import com.neotech.task.service.GraphNode;
-import com.neotech.task.service.PhoneNumberCountryDetectService;
-import com.neotech.task.service.PhoneNumberLengthCheckService;
 import com.neotech.task.service.dto.CountryDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,17 +19,17 @@ public class PhoneNumberCountryDetectServiceTest {
             
     @Before
     public void init() {
-        GraphNode[] phoneNumberGraph = new GraphNode[10];
-        phoneNumberGraph[3] = new GraphNode();
-        GraphNode node3 = phoneNumberGraph[3];
+        TreeNode[] phoneNumberGraph = new TreeNode[10];
+        phoneNumberGraph[3] = new TreeNode();
+        TreeNode node3 = phoneNumberGraph[3];
 
-        node3.nextNodes = new GraphNode[10];
-        node3.nextNodes[7] = new GraphNode();
-        GraphNode node37 = node3.nextNodes[7];
+        node3.nextNodes = new TreeNode[10];
+        node3.nextNodes[7] = new TreeNode();
+        TreeNode node37 = node3.nextNodes[7];
 
-        node37.nextNodes = new GraphNode[10];
-        node37.nextNodes[1] = new GraphNode();
-        GraphNode node371 = node37.nextNodes[1];
+        node37.nextNodes = new TreeNode[10];
+        node37.nextNodes[1] = new TreeNode();
+        TreeNode node371 = node37.nextNodes[1];
         node371.country = Optional.of("Latvia");
         node371.countryCode = "371";
 

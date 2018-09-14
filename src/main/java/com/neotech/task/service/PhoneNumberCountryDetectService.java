@@ -36,7 +36,7 @@ public class PhoneNumberCountryDetectService {
     public static final String NORTH_AMERICA_WIKI_URL = "https://en.wikipedia.org/wiki/List_of_North_American_Numbering_Plan_area_codes";
     public static final String WORLD_WIKI_URL = "https://en.wikipedia.org/wiki/List_of_country_calling_codes";
 
-    private static GraphNode[] phoneNumberGraph = new GraphNode[10];
+    private static TreeNode[] phoneNumberGraph = new TreeNode[10];
 
     PhoneNumberLengthCheckService validationService;
 
@@ -45,7 +45,7 @@ public class PhoneNumberCountryDetectService {
         this.validationService = validationService;
     }
 
-    public PhoneNumberCountryDetectService(PhoneNumberLengthCheckService validationService, GraphNode[] phoneNumberGraph) {
+    public PhoneNumberCountryDetectService(PhoneNumberLengthCheckService validationService, TreeNode[] phoneNumberGraph) {
         this.validationService = validationService;
         this.phoneNumberGraph = phoneNumberGraph;
     }
@@ -84,7 +84,7 @@ public class PhoneNumberCountryDetectService {
         return new CountryDto(pairRes.getKey(), pairRes.getValue());
     }
 
-    private Pair<String, String> getFromGraph(GraphNode[] passedGraph, String number) {
+    private Pair<String, String> getFromGraph(TreeNode[] passedGraph, String number) {
         final String digitS = number.substring(0, 1);
         final Integer digit = Integer.valueOf(digitS);
 
@@ -166,13 +166,13 @@ public class PhoneNumberCountryDetectService {
         }
     }
 
-    private void insertIntoGraph(GraphNode[] phoneNumberGraph, String number, String country, String countryCode) {
+    private void insertIntoGraph(TreeNode[] phoneNumberGraph, String number, String country, String countryCode) {
         final String digitS = number.substring(0, 1);
         countryCode += digitS;
         final Integer digit = Integer.valueOf(digitS);
         
         if (phoneNumberGraph[digit] == null) {
-            phoneNumberGraph[digit] = new GraphNode();
+            phoneNumberGraph[digit] = new TreeNode();
         }
 
         if (number.length() > 1) {

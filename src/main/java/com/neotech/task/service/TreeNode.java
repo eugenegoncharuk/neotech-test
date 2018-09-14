@@ -5,9 +5,9 @@ package com.neotech.task.service;
 
 import java.util.Optional;
 
-public class GraphNode {
+public class TreeNode {
 
-    public GraphNode[] nextNodes = new GraphNode[10];
+    public TreeNode[] nextNodes = new TreeNode[10];
 
     public Optional<String> country = Optional.empty();
 
